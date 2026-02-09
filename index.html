@@ -28,6 +28,7 @@
         .container img {
             max-width: 200px;
             height: auto;
+            cursor: pointer; /* laat zien dat de vlag klikbaar is */
         }
 
         .container p {
@@ -65,8 +66,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Vlagify logo">
+    <div class="container" id="mainContainer">
+        <img src="logo.png" alt="Vlagify logo" id="flag">
         <p>We zijn momenteel in onderhoud.</p>
     </div>
 
@@ -77,12 +78,29 @@
 
         <div class="footer-right">
             Voor meer informatie: 
-            <a href="https://www.youtube.com/shorts/_6HzLIJPH2A">Jad El Terrorista ▄︻デ══━一💥</a>
+            <a href="https://www.youtube.com/shorts/_6HzLIJPH2A">info@vlagify.nl</a>
         </div>
     </footer>
 
     <script>
         document.getElementById("year").textContent = new Date().getFullYear();
+
+        const flag = document.getElementById("flag");
+        const container = document.getElementById("mainContainer");
+
+        flag.addEventListener("click", () => {
+            // Alles in de container leegmaken
+            container.innerHTML = "";
+
+            // Nieuw plaatje toevoegen
+            const newImage = document.createElement("img");
+            newImage.src = "aapjad.png"; // hier zet je het plaatje dat je wilt laten zien
+            newImage.alt = "jad de aap";
+            newImage.style.maxWidth = "400px"; // optioneel groter formaat
+            newImage.style.height = "auto";
+
+            container.appendChild(newImage);
+        });
     </script>
 </body>
 </html>
