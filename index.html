@@ -37,6 +37,18 @@
             margin: 0;
         }
 
+        .image-row {
+            display: flex;
+            gap: 20px; /* ruimte tussen de afbeeldingen */
+            justify-content: center;
+            flex-wrap: wrap; /* afbeeldingen gaan naar de volgende regel als scherm te smal is */
+        }
+
+        .image-row img {
+            max-width: 250px;
+            height: auto;
+        }
+
         footer {
             padding: 20px;
             background-color: #ffffff;
@@ -78,7 +90,7 @@
 
         <div class="footer-right">
             Voor meer informatie: 
-            <a href="https://www.youtube.com/shorts/_6HzLIJPH2A">info@vlagify.nl</a>
+            <a href="mailto:info@vlagify.nl">info@vlagify.nl</a>
         </div>
     </footer>
 
@@ -92,14 +104,21 @@
             // Alles in de container leegmaken
             container.innerHTML = "";
 
-            // Nieuw plaatje toevoegen
-            const newImage = document.createElement("img");
-            newImage.src = "aapjad.png"; // hier zet je het plaatje dat je wilt laten zien
-            newImage.alt = "jad de aap";
-            newImage.style.maxWidth = "400px"; // optioneel groter formaat
-            newImage.style.height = "auto";
+            // Flex container voor drie afbeeldingen
+            const imageRow = document.createElement("div");
+            imageRow.className = "image-row";
 
-            container.appendChild(newImage);
+            // Lijst van afbeeldingen
+            const images = ["aapjad.png", "jadkat.png", "jadvlieg.png"];
+
+            images.forEach(src => {
+                const img = document.createElement("img");
+                img.src = src;
+                img.alt = "jad de aap";
+                imageRow.appendChild(img);
+            });
+
+            container.appendChild(imageRow);
         });
     </script>
 </body>
