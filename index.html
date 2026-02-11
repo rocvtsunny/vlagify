@@ -1,125 +1,250 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="vlag.svg">
-    <title>Vlagify</title>
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vlagify - Interactieve plaatjes met geluid</title>
+<link rel="icon" type="image/x-icon" href="vlag.svg">
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    position: relative;
+    overflow-x: hidden;
+}
 
-        .container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
 
-        .container img {
-            max-width: 200px;
-            height: auto;
-            cursor: pointer; /* laat zien dat de vlag klikbaar is */
-        }
+.container img {
+    max-width: 200px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
 
-        .container p {
-            font-size: 18px;
-            color: #333;
-            margin: 0;
-        }
+.container p {
+    font-size: 18px;
+    color: #333;
+    margin: 0;
+}
 
-        .image-row {
-            display: flex;
-            gap: 20px; /* ruimte tussen de afbeeldingen */
-            justify-content: center;
-            flex-wrap: wrap; /* afbeeldingen gaan naar de volgende regel als scherm te smal is */
-        }
+.image-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-        .image-row img {
-            max-width: 250px;
-            height: auto;
-        }
+.image-row img {
+    max-width: 250px;
+    height: auto;
+    cursor: pointer;
+    position: relative;
+}
 
-        footer {
-            padding: 20px;
-            background-color: #ffffff;
-            border-top: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-        }
+footer {
+    padding: 20px;
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}
 
-        .footer-left {
-            font-size: 14px;
-            color: #666;
-        }
+.footer-left {
+    font-size: 14px;
+    color: #666;
+}
 
-        .footer-right {
-            margin-left: auto;
-            font-size: 14px;
-        }
+.footer-right {
+    margin-left: auto;
+    font-size: 14px;
+}
 
-        .footer-right a {
-            color: #2563eb;
-            text-decoration: none;
-        }
+.footer-right a {
+    color: #2563eb;
+    text-decoration: none;
+}
 
-        .footer-right a:hover {
-            text-decoration: underline;
-        }
-    </style>
+.footer-right a:hover {
+    text-decoration: underline;
+}
+
+/* Kogel styling */
+.bullet {
+    position: absolute;
+    width: 12px;
+    height: 6px;
+    background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00);
+    border-radius: 50%;
+    box-shadow: 0 0 5px #ffdd88, 0 0 10px #ffaa33;
+    animation: shoot 2s linear forwards;
+}
+
+/* Schiet-effect */
+.muzzle-flash {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #ffff66, #ffcc33, transparent 70%);
+    border-radius: 50%;
+    opacity: 0.9;
+    animation: flash 0.15s linear forwards;
+}
+
+/* Animatie kogel */
+@keyframes shoot {
+    from { transform: translate(0, 0) rotate(0deg); }
+    to { transform: translate(500px, -400px) rotate(15deg); }
+}
+
+/* Animatie flash */
+@keyframes flash {
+    from { transform: scale(1); opacity: 0.9; }
+    to { transform: scale(1.5); opacity: 0; }
+}
+
+/* Rechterplaatje vliegen */
+@keyframes flyAway {
+    0% { transform: rotate(0deg) translate(0,0); opacity: 1; }
+    25% { transform: rotate(90deg) translate(50px,-50px); }
+    50% { transform: rotate(180deg) translate(150px,-150px); }
+    75% { transform: rotate(270deg) translate(300px,-300px); }
+    100% { transform: rotate(360deg) translate(500px,-500px); opacity: 0; }
+}
+
+.fly-away {
+    animation: flyAway 2s ease-in forwards;
+    position: absolute;
+    z-index: 1000;
+}
+
+/* Blaaf animatie */
+@keyframes barkJump {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+}
+
+.bark {
+    animation: barkJump 0.3s ease-in-out;
+}
+</style>
 </head>
 <body>
-    <div class="container" id="mainContainer">
-        <img src="logo.png" alt="Vlagify logo" id="flag">
-        <p>We zijn momenteel in onderhoud.</p>
+
+<div class="container" id="mainContainer">
+    <img src="logo.png" alt="Vlagify logo" id="flag">
+    <p>We zijn momenteel in onderhoud.</p>
+</div>
+
+<footer>
+    <div class="footer-left">
+        © <span id="year"></span> Vlagify. Alle rechten voorbehouden.
     </div>
+    <div class="footer-right">
+        Voor meer informatie: 
+        <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0">info@vlagify.nl</a>
+    </div>
+</footer>
 
-    <footer>
-        <div class="footer-left">
-            © <span id="year"></span> Vlagify. Alle rechten voorbehouden.
-        </div>
+<script>
+// Jaar automatisch instellen
+document.getElementById("year").textContent = new Date().getFullYear();
 
-        <div class="footer-right">
-            Voor meer informatie: 
-            <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0">info@vlagify.nl</a>
-        </div>
-    </footer>
+// Audio bestanden (worden alleen afgespeeld bij klik)
+const akSound = new Audio("ak.mp3");          
+const barkSound = new Audio("blaaf.mp3");     
+const planeSound = new Audio("vliegtuig.mp3");
 
-    <script>
-        document.getElementById("year").textContent = new Date().getFullYear();
+// Functie om geluid af te spelen bij klik
+function playSound(sound) {
+    sound.currentTime = 0; // Begin altijd bij start
+    sound.play();
+}
 
-        const flag = document.getElementById("flag");
-        const container = document.getElementById("mainContainer");
+const flag = document.getElementById("flag");
+const container = document.getElementById("mainContainer");
 
-        flag.addEventListener("click", () => {
-            // Alles in de container leegmaken
-            container.innerHTML = "";
+flag.addEventListener("click", () => {
+    container.innerHTML = "";
 
-            // Flex container voor drie afbeeldingen
-            const imageRow = document.createElement("div");
-            imageRow.className = "image-row";
+    const imageRow = document.createElement("div");
+    imageRow.className = "image-row";
 
-            // Lijst van afbeeldingen
-            const images = ["aapjad.png", "jadkat.png", "jadvlieg.png"];
+    const images = ["aapjad.png", "jadkat.png", "jadvlieg.png"];
 
-            images.forEach(src => {
-                const img = document.createElement("img");
-                img.src = src;
-                img.alt = "jad de aap";
-                imageRow.appendChild(img);
+    images.forEach((src, index) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "jad de aap";
+
+        // Linkerplaatje: AK schieten
+        if(index === 0){
+            img.addEventListener("click", () => {
+                playSound(akSound);
+
+                const rect = img.getBoundingClientRect();
+
+                // Schiet-effect
+                const flash = document.createElement("div");
+                flash.className = "muzzle-flash";
+                flash.style.left = rect.left + rect.width - 10 + "px";
+                flash.style.top = rect.top + "px";
+                document.body.appendChild(flash);
+                flash.addEventListener("animationend", () => flash.remove());
+
+                // Kogel
+                const bullet = document.createElement("div");
+                bullet.className = "bullet";
+                bullet.style.left = rect.left + rect.width - 6 + "px";
+                bullet.style.top = rect.top + "px";
+                document.body.appendChild(bullet);
+                bullet.addEventListener("animationend", () => bullet.remove());
             });
+        }
 
-            container.appendChild(imageRow);
-        });
-    </script>
+        // Middelste plaatje: blaft
+        if(index === 1){
+            img.addEventListener("click", () => {
+                img.classList.add("bark");
+                setTimeout(() => img.classList.remove("bark"), 300);
+
+                playSound(barkSound);
+            });
+        }
+
+        // Rechterplaatje: vliegt weg
+        if(index === 2){
+            img.addEventListener("click", () => {
+                playSound(planeSound);
+
+                const rect = img.getBoundingClientRect();
+                img.style.position = "absolute";
+                img.style.left = rect.left + "px";
+                img.style.top = rect.top + "px";
+                img.classList.add("fly-away");
+                img.addEventListener("animationend", () => img.remove());
+            });
+        }
+
+        imageRow.appendChild(img);
+    });
+
+    container.appendChild(imageRow);
+});
+</script>
+
 </body>
 </html>
